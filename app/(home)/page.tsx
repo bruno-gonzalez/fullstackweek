@@ -11,7 +11,11 @@ export default function Home() {
           <h2 className="text-xl font-bold">Olá, Fulano</h2>
           <p className="capitalize text-sm">{format(new Date(), "EEEE',' dd 'de' MMMM", { locale: ptBR })}</p>
         </div>
-        <Search />
-      </div>
+
+        <div className="px-5 mt-6">
+          <Search />
+        </div>
+        
+    </div>
   );
 }
