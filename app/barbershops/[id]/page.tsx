@@ -1,15 +1,14 @@
-import { Button } from "@/app/_components/ui/button";
 import { db } from "@/app/_lib/prisma";
-import { ChevronLeftIcon, MapPin, MenuIcon, StarIcon } from "lucide-react";
-import Image from "next/image";
 import BarberShopInfo from "./_components/barber-shop-info";
 import ServiceItem from "./_components/service-item";
+import { auth } from "@/auth";
 
 interface BarbershopPageProps {
     params: Promise<{ id?: string }>;
 }
 
 const BarbershopPage = async ({params}: BarbershopPageProps) => {
+    const session = await auth();
     const { id } = await params;
 
     if(!id) {
@@ -31,7 +30,6 @@ const BarbershopPage = async ({params}: BarbershopPageProps) => {
         return <h1>Barbearia não encontrada</h1>
     }
 
-    // Converte Decimal para number para serialização
     const barbershopWithPrices = {
         ...barbershop,
         services: barbershop.services.map(service => ({
@@ -44,9 +42,11 @@ const BarbershopPage = async ({params}: BarbershopPageProps) => {
         <div>
             <BarberShopInfo barbershop={barbershopWithPrices} />
 
+            
+
             <div className="px-5 flex flex-col gap-4 mb-10 py-6">
                 {barbershopWithPrices.services.map((service) => (
-                <ServiceItem key={service.id} service={service} />
+                <ServiceItem key={service.id} service={service} isAuthenticated={!!session} />
             ))}
             </div>
             
