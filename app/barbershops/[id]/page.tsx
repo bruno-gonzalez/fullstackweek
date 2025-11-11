@@ -4,54 +4,55 @@ import ServiceItem from "./_components/service-item";
 import { auth } from "@/auth";
 
 interface BarbershopPageProps {
-    params: Promise<{ id?: string }>;
+  params: Promise<{ id?: string }>;
 }
 
-const BarbershopPage = async ({params}: BarbershopPageProps) => {
-    const session = await auth();
-    const { id } = await params;
+const BarbershopPage = async ({ params }: BarbershopPageProps) => {
+  const session = await auth();
+  const { id } = await params;
 
-    if(!id) {
-        //TODO
-        return <h1>Barbearia não encontrada</h1>
-    }
-    
-    const barbershop = await db.barbershop.findUnique({
-        where: { 
-            id,
-        },
-        include: {
-            services: true,
-        }
-    });
+  if (!id) {
+    //TODO
+    return <h1>Barbearia não encontrada</h1>;
+  }
 
-    if(!barbershop) {
-        //TODO
-        return <h1>Barbearia não encontrada</h1>
-    }
+  const barbershop = await db.barbershop.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      services: true,
+    },
+  });
 
-    const barbershopWithPrices = {
-        ...barbershop,
-        services: barbershop.services.map(service => ({
-            ...service,
-            price: Number(service.price),
-        })),
-    };
+  if (!barbershop) {
+    //TODO
+    return <h1>Barbearia não encontrada</h1>;
+  }
 
-    return (
-        <div>
-            <BarberShopInfo barbershop={barbershopWithPrices} />
+  const barbershopWithPrices = {
+    ...barbershop,
+    services: barbershop.services.map((service) => ({
+      ...service,
+      price: Number(service.price),
+    })),
+  };
 
-            
+  return (
+    <div>
+      <BarberShopInfo barbershop={barbershopWithPrices} />
 
-            <div className="px-5 flex flex-col gap-4 mb-10 py-6">
-                {barbershopWithPrices.services.map((service) => (
-                <ServiceItem key={service.id} service={service} isAuthenticated={!!session} />
-            ))}
-            </div>
-            
-        </div>
-      );
-}
- 
+      <div className="px-5 flex flex-col gap-4 mb-10 py-6">
+        {barbershopWithPrices.services.map((service) => (
+          <ServiceItem
+            key={service.id}
+            service={service}
+            isAuthenticated={!!session}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
 export default BarbershopPage;

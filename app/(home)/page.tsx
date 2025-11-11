@@ -5,15 +5,19 @@ import Search from "./_components/search";
 import BookingItem from "../_components/booking-item";
 import { db } from "../_lib/prisma";
 import BarbershopItem from "./_components/barbershop-item";
+import { auth } from "@/auth";
+
 
 export default async function Home() {
   const barbershops = await db.barbershop.findMany();
+
+  const session = await auth();
 
   return (
     <div>
       <Header />
       <div className="px-5 pt-5">
-        <h2 className="text-xl font-bold">Olá, Fulano</h2>
+        <h2 className="text-xl font-bold">Olá, {session?.user?.name || "Fulano"}</h2>
         <p className="capitalize text-sm">
           {format(new Date(), "EEEE',' dd 'de' MMMM", { locale: ptBR })}
         </p>
