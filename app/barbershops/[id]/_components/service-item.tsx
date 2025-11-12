@@ -14,12 +14,13 @@ import {
   SheetTrigger,
 } from "@/app/_components/ui/sheet";
 import { Calendar } from "@/app/_components/ui/calendar";
-import { useMemo, useState } from "react";
+import { use, useMemo, useState } from "react";
 import { ptBR } from "date-fns/locale";
 import { generateDayTimeList } from "../_helpers/hours";
 import { format, set, setHours, setMinutes } from "date-fns";
 import { saveBooking } from "../_actions/save-bookin";import { Spinner } from "@/app/_components/ui/spinner";
-;
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface ServiceItemProps {
   service: Omit<Service, "price"> & { price: number };
@@ -35,6 +36,7 @@ const ServiceItem = ({
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [hour, setHour] = useState<string | undefined>(undefined);
   const [submitIsLoading, setSubmitIsLoading] = useState(false);
+  const [sheetIsOpen, setSheetIsOpen] = useState(false);
   const {data} = useSession();
 
   const handleBookingClick = () => {
@@ -53,6 +55,9 @@ const ServiceItem = ({
   };
 
   const handleBookingSubmit = async() => {
+    const router = useRouter();
+
+
     setSubmitIsLoading(true);
     try {
       if (!date || !hour || !data?.user.id) {
@@ -60,17 +65,38 @@ const ServiceItem = ({
       }
 
       const newDate = setMinutes(setHours(date, Number(hour.split(":")[0])), Number(hour.split(":")[1]));
-
-
       await saveBooking({
         barbershopId: barbershop.id,
         serviceId: service.id,
         userId: data?.user.id,
         date: newDate
+      })
+      setSheetIsOpen(false);
+
+      toast("Serviço agendado com sucesso!", {
+        description: `dia ${format(date, "dd 'de' MMMM", { locale: ptBR })} às ${hour}.`,
+        action: {
+          label: "Ver agendamentos",
+          onClick: () => {
+            router.push('/bookings');
+          }
+        },
+        style: {
+          background: 'hsl(var(--secondary))',
+          color: 'hsl(var(--secondary-foreground))',
+          border: '1px solid hsl(var(--border))',
+        },
+        actionButtonStyle: {
+          background: 'hsl(var(--primary))',
+          color: 'hsl(var(--primary-foreground))',
+        }
       });
+
+      setDate(undefined);
     }
     catch (error) {
-     console.log(error); 
+     console.log(error);
+     toast.error("Erro ao agendar serviço.");
     }
     finally {
       setSubmitIsLoading(false);
@@ -102,7 +128,7 @@ const ServiceItem = ({
                   currency: "BRL",
                 }).format(service.price)}
               </p>
-              <Sheet>
+              <Sheet open={sheetIsOpen} onOpenChange={setSheetIsOpen}>
                 <SheetTrigger asChild>
                   <Button variant="secondary" onClick={handleBookingClick}>
                     Reservar
