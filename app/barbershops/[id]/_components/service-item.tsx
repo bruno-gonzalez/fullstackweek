@@ -3,7 +3,7 @@
 import { Button } from "@/app/_components/ui/button";
 import { Card, CardContent } from "@/app/_components/ui/card";
 import { signIn, useSession } from "next-auth/react";
-import { Barbershop, Service } from "@prisma/client";
+import { Barbershop, Booking, Service } from "@prisma/client";
 import Image from "next/image";
 import {
   Sheet,
@@ -14,13 +14,15 @@ import {
   SheetTrigger,
 } from "@/app/_components/ui/sheet";
 import { Calendar } from "@/app/_components/ui/calendar";
-import { use, useMemo, useState } from "react";
+import { use, useEffect, useMemo, useState } from "react";
 import { ptBR } from "date-fns/locale";
 import { generateDayTimeList } from "../_helpers/hours";
-import { format, set, setHours, setMinutes } from "date-fns";
+import { format, getDay, isSameDay, set, setHours, setMinutes } from "date-fns";
 import { saveBooking } from "../_actions/save-bookin";import { Spinner } from "@/app/_components/ui/spinner";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { get } from "http";
+import { getDayBookings } from "../_actions/get-bookings";
 
 interface ServiceItemProps {
   service: Omit<Service, "price"> & { price: number };
@@ -37,7 +39,23 @@ const ServiceItem = ({
   const [hour, setHour] = useState<string | undefined>(undefined);
   const [submitIsLoading, setSubmitIsLoading] = useState(false);
   const [sheetIsOpen, setSheetIsOpen] = useState(false);
+  const [dayBookings, setDayBookings] = useState<Booking[]>([]);
   const {data} = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+
+    if (!date) {
+      return;
+    }
+
+    const refreshAvaibleHours = async() => {
+      const _dayBookings = await getDayBookings(date);
+      setDayBookings(_dayBookings);
+    };
+
+    refreshAvaibleHours();
+  }, [date]);
 
   const handleBookingClick = () => {
     if (!isAuthenticated) {
@@ -55,9 +73,6 @@ const ServiceItem = ({
   };
 
   const handleBookingSubmit = async() => {
-    const router = useRouter();
-
-
     setSubmitIsLoading(true);
     try {
       if (!date || !hour || !data?.user.id) {
@@ -102,9 +117,30 @@ const ServiceItem = ({
       setSubmitIsLoading(false);
     }
   };
+
   const timeList = useMemo(() => {
-    return date ? generateDayTimeList(date) : [];
-  }, [date]);
+    if (!date) {
+      return [];
+    } 
+
+    return generateDayTimeList(date).filter(time => {
+      const [timeHour, timeMinute] = time.split(":");
+
+      const booking = dayBookings.find((booking) => {
+        const bookingHour = booking.date.getHours();
+        const bookingMinute = booking.date.getMinutes();
+
+        return bookingHour === Number(timeHour) && bookingMinute === Number(timeMinute);
+     
+      });
+
+      if(!booking) {
+        return true
+      }
+
+      return false;
+    });
+  }, [date, dayBookings]);
 
   return (
     <Card className="m-0 py-2 px-0">
