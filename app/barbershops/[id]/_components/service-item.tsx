@@ -2,7 +2,7 @@
 
 import { Button } from "@/app/_components/ui/button";
 import { Card, CardContent } from "@/app/_components/ui/card";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { Barbershop, Service } from "@prisma/client";
 import Image from "next/image";
 import {
@@ -17,7 +17,9 @@ import { Calendar } from "@/app/_components/ui/calendar";
 import { useMemo, useState } from "react";
 import { ptBR } from "date-fns/locale";
 import { generateDayTimeList } from "../_helpers/hours";
-import { format, set } from "date-fns";
+import { format, set, setHours, setMinutes } from "date-fns";
+import { saveBooking } from "../_actions/save-bookin";import { Spinner } from "@/app/_components/ui/spinner";
+;
 
 interface ServiceItemProps {
   service: Omit<Service, "price"> & { price: number };
@@ -32,6 +34,8 @@ const ServiceItem = ({
 }: ServiceItemProps) => {
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [hour, setHour] = useState<string | undefined>(undefined);
+  const [submitIsLoading, setSubmitIsLoading] = useState(false);
+  const {data} = useSession();
 
   const handleBookingClick = () => {
     if (!isAuthenticated) {
@@ -48,6 +52,30 @@ const ServiceItem = ({
     setHour(undefined);
   };
 
+  const handleBookingSubmit = async() => {
+    setSubmitIsLoading(true);
+    try {
+      if (!date || !hour || !data?.user.id) {
+        return;
+      }
+
+      const newDate = setMinutes(setHours(date, Number(hour.split(":")[0])), Number(hour.split(":")[1]));
+
+
+      await saveBooking({
+        barbershopId: barbershop.id,
+        serviceId: service.id,
+        userId: data?.user.id,
+        date: newDate
+      });
+    }
+    catch (error) {
+     console.log(error); 
+    }
+    finally {
+      setSubmitIsLoading(false);
+    }
+  };
   const timeList = useMemo(() => {
     return date ? generateDayTimeList(date) : [];
   }, [date]);
@@ -163,7 +191,9 @@ const ServiceItem = ({
                   )}
                   {date && hour && (
                     <SheetFooter className="m-0 py-0 px-3">
-                      <Button>Confirmar Reserva</Button>
+                      <Button onClick={handleBookingSubmit} disabled={submitIsLoading}>
+                        {submitIsLoading ? <Spinner /> : "Confirmar Reserva"}
+                      </Button>
                     </SheetFooter>
                   )}
                 </SheetContent>
