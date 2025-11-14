@@ -52,7 +52,7 @@ const SideMenu = () => {
               <Button
                 className="flex justify-start"
                 variant="outline"
-                onClick={() => signIn()}
+                onClick={() => signIn('google')}
               >
                 <ArrowRightFromLine />
                 <span className="text-center">Fazer Login</span>
