@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, isFuture } from "date-fns";
 import Header from "../_components/header";
 import { ptBR } from "date-fns/locale/pt-BR";
 import Search from "./_components/search";
@@ -9,9 +9,24 @@ import { auth } from "@/auth";
 
 
 export default async function Home() {
-  const barbershops = await db.barbershop.findMany();
-
   const session = await auth();
+
+  const [barbershops, myBookings] = await Promise.all([
+    db.barbershop.findMany(),
+    session?.user ?
+    db.booking.findMany({
+        where: { 
+            userId: session?.user?.id,
+        },
+        include: {
+            barbershop: true,
+            service: true,
+        },
+        orderBy: {
+            date: 'asc',
+        },
+    })
+   : Promise.resolve([])]);
 
   return (
     <div>
@@ -29,7 +44,11 @@ export default async function Home() {
 
       <div className="px-5">
         <h2 className="text-xs mb-3 uppercase text-gray-400">Agendamentos</h2>
-        <BookingItem />
+        <div className="flex overflow-x-auto gap-3 [&::-webkit-scrollbar]:hidden">
+          {
+            myBookings.filter(booking => isFuture(booking.date)).map(confirmedBooking => <BookingItem key={confirmedBooking.id} booking={confirmedBooking}  />)
+          }
+        </div>
       </div>
       <div className="mt-6">
         <h2 className="px-5 text-xs mb-3 uppercase text-gray-400 font-bold">
