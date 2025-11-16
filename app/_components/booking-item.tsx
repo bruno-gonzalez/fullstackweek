@@ -21,6 +21,17 @@ import { cancelBooking } from "../_actions/cancel-booking";
 import { toast } from "sonner";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
 
 interface BookingItemProps {
   booking: Omit<
@@ -52,8 +63,7 @@ const BookingItem = ({ booking }: BookingItemProps) => {
     } catch (error) {
       console.error("O cancelamento falhou", error);
       toast.error("Falha ao cancelar o agendamento.");
-    }
-    finally {
+    } finally {
       setIsCanceling(false);
     }
   };
@@ -176,14 +186,35 @@ const BookingItem = ({ booking }: BookingItemProps) => {
               Voltar
             </Button>
           </SheetClose>
-          <Button
-            variant={"destructive"}
-            disabled={isBookingConfirmed(booking) ? false : true}
-            className="flex-1"
-            onClick={handleCancelBooking}
-          >
-            {isCanceling ? <Loader2 className="mr-2 h-4 w-4" /> : "Cancelar agendamento"}
-          </Button>
+
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant={"destructive"}
+                disabled={isBookingConfirmed(booking) ? false : true}
+                className="flex-1"
+              >
+                Cancelar
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="w-[90%]">
+              <AlertDialogHeader>
+                <AlertDialogTitle>Tem certeza que deseja cancelar o agendamento?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Esta ação não pode ser desfeita. Isso cancelará permanentemente
+                  o agendamento.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter className="flex-row justify-center">
+                <AlertDialogCancel>Voltar</AlertDialogCancel>
+                <AlertDialogAction disabled={isCanceling} className="bg-red-500" onClick={handleCancelBooking}>{isCanceling ? (
+                  <Loader2 className="mr-2 h-4 w-4" />
+                ) : (
+                  "Confirmar"
+                )}</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </SheetFooter>
       </SheetContent>
     </Sheet>
