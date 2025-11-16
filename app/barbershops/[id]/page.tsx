@@ -30,9 +30,10 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
     return <h1>Barbearia não encontrada</h1>;
   }
 
+  // Convert Decimal to number for Client Components
   const barbershopWithPrices = {
     ...barbershop,
-    services: barbershop.services.map((service) => ({
+    services: barbershop.services.map(service => ({
       ...service,
       price: Number(service.price),
     })),

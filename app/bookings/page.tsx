@@ -39,10 +39,24 @@ const BookingsPage = async () => {
                 service: true,
             }
         })
-    ]) 
+    ]);
 
-    // const confirmedBookings = myBookings.filter(booking => booking.date >= new Date());
-    // const finishedBookings = myBookings.filter(booking => booking.date < new Date());
+    // Convert Decimal to number for Client Components
+    const confirmedBookingsWithPrices = confirmedBookings.map(booking => ({
+        ...booking,
+        service: {
+            ...booking.service,
+            price: Number(booking.service.price),
+        },
+    }));
+
+    const finishedBookingsWithPrices = finishedBookings.map(booking => ({
+        ...booking,
+        service: {
+            ...booking.service,
+            price: Number(booking.service.price),
+        },
+    }));
 
     return ( 
         <>
@@ -50,13 +64,13 @@ const BookingsPage = async () => {
             <div className="px-5 py-6 flex flex-col min-h-full">
                 <h1 className="text-xl font-bold mb-6">Agendamentos</h1>
 
-                {confirmedBookings.length > 0 && (
+                {confirmedBookingsWithPrices.length > 0 && (
                     <div className="mb-6">
                         <h2 className="text-gray-400 uppercase text-xs font-bold mb-3">
                             Confirmados
                         </h2>
                         <div className="flex flex-col gap-3">
-                            {confirmedBookings.map(booking => (
+                            {confirmedBookingsWithPrices.map(booking => (
                                 <BookingItem 
                                     key={booking.id}
                                     booking={booking}
@@ -66,13 +80,13 @@ const BookingsPage = async () => {
                     </div>
                 )}
 
-                {finishedBookings.length > 0 && (
+                {finishedBookingsWithPrices.length > 0 && (
                     <div>
                         <h2 className="text-gray-400 uppercase text-xs font-bold mb-3">
                             Finalizados
                         </h2>
                         <div className="flex flex-col gap-3">
-                            {finishedBookings.map(booking => (
+                            {finishedBookingsWithPrices.map(booking => (
                                 <BookingItem 
                                     key={booking.id}
                                     booking={booking}
@@ -82,7 +96,7 @@ const BookingsPage = async () => {
                     </div>
                 )}
 
-                {finishedBookings.length === 0 && confirmedBookings.length === 0 && (
+                {finishedBookingsWithPrices.length === 0 && confirmedBookingsWithPrices.length === 0 && (
                     <p className="text-gray-400">Você ainda não tem agendamentos.</p>
                 )}
             </div>

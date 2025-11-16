@@ -76,7 +76,7 @@ const ServiceItem = ({
   const handleBookingSubmit = async() => {
     setSubmitIsLoading(true);
     try {
-      if (!date || !hour || !data?.user.id) {
+      if (!date || !hour || !data?.user?.id) {
         return;
       }
 
@@ -163,7 +163,7 @@ const ServiceItem = ({
                 {Intl.NumberFormat("pt-BR", {
                   style: "currency",
                   currency: "BRL",
-                }).format(service.price)}
+                }).format(Number(service.price))}
               </p>
               <Sheet open={sheetIsOpen} onOpenChange={setSheetIsOpen}>
                 <SheetTrigger asChild>
@@ -231,7 +231,7 @@ const ServiceItem = ({
                               {Intl.NumberFormat("pt-BR", {
                                 style: "currency",
                                 currency: "BRL",
-                              }).format(service.price)}
+                              }).format(Number(service.price))}
                             </p>
                           </div>
                           <div className="flex justify-between">

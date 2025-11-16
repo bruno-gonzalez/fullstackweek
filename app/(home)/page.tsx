@@ -11,6 +11,7 @@ import { auth } from "@/auth";
 export default async function Home() {
   const session = await auth();
 
+
   const [barbershops, myBookings] = await Promise.all([
     db.barbershop.findMany(),
     session?.user ?
@@ -27,6 +28,15 @@ export default async function Home() {
         },
     })
    : Promise.resolve([])]);
+
+  // Convert Decimal to number for Client Components
+  const bookingsWithPrices = myBookings.map(booking => ({
+    ...booking,
+    service: {
+      ...booking.service,
+      price: Number(booking.service.price),
+    },
+  }));
 
   return (
     <div>
@@ -46,7 +56,7 @@ export default async function Home() {
         <h2 className="text-xs mb-3 uppercase text-gray-400">Agendamentos</h2>
         <div className="flex overflow-x-auto gap-3 [&::-webkit-scrollbar]:hidden">
           {
-            myBookings.filter(booking => isFuture(booking.date)).map(confirmedBooking => <BookingItem key={confirmedBooking.id} booking={confirmedBooking}  />)
+            bookingsWithPrices.filter(booking => isFuture(booking.date)).map(confirmedBooking => <BookingItem key={confirmedBooking.id} booking={confirmedBooking}  />)
           }
         </div>
       </div>
