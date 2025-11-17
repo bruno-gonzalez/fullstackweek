@@ -4,19 +4,11 @@ import Image from "next/image";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import {
-  ArrowLeftFromLine,
-  ArrowRightFromLine,
-  Calendar,
-  CalendarIcon,
-  HomeIcon,
   MenuIcon,
-  UserIcon,
 } from "lucide-react";
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
 import SideMenu from "./side-menu";
@@ -28,7 +20,7 @@ const Header = () => {
       <Card>
         <CardContent className="p-5 flex items-center justify-between">
           <Link href={"/"}>
-            <Image src="/logo.png" alt="FSW Barber" height={22} width={120} />
+            <Image src="/logo.png" alt="FSW Barber" height={30} width={180} />
           </Link>
           <Sheet>
             <SheetTrigger asChild>
