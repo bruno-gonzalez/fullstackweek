@@ -41,7 +41,7 @@ const BookingsPage = async () => {
         })
     ]);
 
-    // Convert Decimal to number for Client Components
+    // Converte decimal pra number para client components
     const confirmedBookingsWithPrices = confirmedBookings.map(booking => ({
         ...booking,
         service: {

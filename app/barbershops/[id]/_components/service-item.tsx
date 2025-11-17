@@ -175,44 +175,46 @@ const ServiceItem = ({
                     Reservar
                   </Button>
                 </SheetTrigger>
-                <SheetContent className="px-0 overflow-y-auto">
+                <SheetContent className="px-0 gap-0 overflow-y-auto">
                   <SheetHeader className="text-left px-5 py-5 border-b border-solid border-secondary">
                     <SheetTitle>Agendar {service.name}</SheetTitle>
                   </SheetHeader>
 
-                  <div className="flex flex-col">
-                    <Calendar
-                      mode="single"
-                      selected={date}
-                      onSelect={handleDateClick}
-                      className="w-full mt-6"
-                      buttonVariant={"ghost"}
-                      locale={ptBR}
-                      disabled={{ before: new Date() }}
-                      styles={{
-                        head_cell: {
-                          width: "100%",
-                          textTransform: "capitalize",
-                        },
-                        cell: {
-                          width: "100%",
-                        },
-                        day_button: {
-                          width: "100%",
-                        },
-                        nav_button: {
-                          marginLeft: 0,
-                          marginRight: 0,
-                        },
-                        caption_label: {
-                          textTransform: "capitalize",
-                        },
-                      }}
-                    />
+                  <div className="flex flex-col h-full">
+                    <div className="px-5 pb-6 border-b border-solid border-secondary">
+                      <Calendar
+                        mode="single"
+                        selected={date}
+                        onSelect={handleDateClick}
+                        className="w-full mt-6"
+                        buttonVariant={"ghost"}
+                        locale={ptBR}
+                        disabled={{ before: new Date() }}
+                        styles={{
+                          head_cell: {
+                            width: "100%",
+                            textTransform: "capitalize",
+                          },
+                          cell: {
+                            width: "100%",
+                          },
+                          day_button: {
+                            width: "100%",
+                          },
+                          nav_button: {
+                            marginLeft: 0,
+                            marginRight: 0,
+                          },
+                          caption_label: {
+                            textTransform: "capitalize",
+                          },
+                        }}
+                      />
+                    </div>
 
                     {/*mostrar lista de horários apenas após a seleção da data*/}
                     {date && (
-                      <div className="flex gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden px-5 py-6 border-y border-solid border-secondary">
+                      <div className="flex gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden px-5 py-6 border-b border-solid border-secondary">
                         {timeList.length > 0 ? (
                           timeList.map((time) => (
                             <Button
@@ -234,7 +236,7 @@ const ServiceItem = ({
 
                     {/* preview do serviço + valor + data + horário selecionados */}
                     {date && hour && (
-                      <div className="py-6 px-3">
+                      <div className="py-6 px-5">
                         <Card>
                           <CardContent className="flex flex-col gap-3 px-3 border-solid border-secondary">
                             <div className="flex justify-between">
@@ -268,7 +270,7 @@ const ServiceItem = ({
                     )}
 
                     {date && hour && (
-                      <div className="px-3 pb-6">
+                      <div className="px-5 pb-6">
                         <Button
                           onClick={handleBookingSubmit}
                           disabled={submitIsLoading}
