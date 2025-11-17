@@ -207,7 +207,8 @@ const ServiceItem = ({
                   {/*mostrar lista de horários apenas após a seleção da data*/}
                   {date && (
                     <div className="flex gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden px-5 py-6 border-y border-solid border-secondary">
-                      {timeList.map((time) => (
+                      {timeList.length > 0 ? (
+                        timeList.map((time) => (
                         <Button
                           onClick={() => handleHourClick(time)}
                           key={time}
@@ -216,7 +217,10 @@ const ServiceItem = ({
                         >
                           {time}
                         </Button>
-                      ))}
+                      ))
+                      ) : (
+                        <p className="text-sm text-gray-500">Nenhum horário disponível</p>
+                      )}
                     </div>
                   )}
 
