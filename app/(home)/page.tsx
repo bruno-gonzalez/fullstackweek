@@ -1,7 +1,7 @@
 import { format, isFuture } from "date-fns";
 import Header from "../_components/header";
 import { ptBR } from "date-fns/locale/pt-BR";
-import Search from "./_components/search";
+import Search from "@/app/_components/search";
 import BookingItem from "../_components/booking-item";
 import { db } from "../_lib/prisma";
 import BarbershopItem from "./_components/barbershop-item";
@@ -80,7 +80,9 @@ export default async function Home() {
 
         <div className="flex overflow-x-auto gap-3 [&::-webkit-scrollbar]:hidden px-5 pb-5">
           {barbershops.map((barbershop) => (
-            <BarbershopItem key={barbershop.id} barbershop={barbershop} />
+            <div className="min-w-[167px]" key={barbershop.id}>
+              <BarbershopItem barbershop={barbershop} />
+            </div>
           ))}
         </div>
       </div>
@@ -92,7 +94,9 @@ export default async function Home() {
 
         <div className="flex overflow-x-auto gap-3 [&::-webkit-scrollbar]:hidden px-5 pb-5">
           {barbershops.map((barbershop) => (
-            <BarbershopItem key={barbershop.id} barbershop={barbershop} />
+            <div className="min-w-[167px]" key={barbershop.id}>
+              <BarbershopItem barbershop={barbershop} />
+            </div>
           ))}
         </div>
       </div>
