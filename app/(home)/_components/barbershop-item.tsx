@@ -10,9 +10,13 @@ import { useRouter } from "next/navigation";
 
 interface BarbershopItemProps {
   barbershop: Barbershop;
+  reviewStats: {
+    averageRating: number;
+    totalReviews: number;
+  };
 }
 
-const BarbershopItem = ({ barbershop }: BarbershopItemProps) => {
+const BarbershopItem = ({ barbershop, reviewStats }: BarbershopItemProps) => {
   const router = useRouter();
 
   const handleBookingClick = () => {
@@ -26,7 +30,7 @@ const BarbershopItem = ({ barbershop }: BarbershopItemProps) => {
           <div className="absolute top-2 left-2 z-50">
             <Badge variant={'secondary'} className="flex items-center justify-center opacity-90">
             <StarIcon className="fill-primary text-primary" size={12}/>
-            <span>5,0</span>
+            <span> {reviewStats.averageRating.toFixed(1)}</span>
           </Badge>
           </div>
           <Image

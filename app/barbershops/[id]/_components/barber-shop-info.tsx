@@ -14,9 +14,13 @@ interface BarberShopInfoProps {
     address: string;
     imageUrl: string;
   };
+  reviewStats: {
+    averageRating: number;
+    totalReviews: number;
+  };
 }
 
-const BarberShopInfo = ({ barbershop }: BarberShopInfoProps) => {
+const BarberShopInfo = ({ barbershop, reviewStats }: BarberShopInfoProps) => {
   const router = useRouter();
   const handleBackClick = () => {
     router.replace("/");
@@ -60,15 +64,23 @@ const BarberShopInfo = ({ barbershop }: BarberShopInfoProps) => {
       <div className="px-5 pt-3 pb-6 border-solid border-secondary">
         <h1 className="text-xl font-bold">{barbershop.name}</h1>
 
-        <div className="flex item-center gap-1 mt-2">
+        <div className="flex gap-4">
+          <div className="flex item-center gap-1 mt-2">
           <MapPin size={16} className="text-primary" />
           <p className="text-sm">{barbershop.address}</p>
         </div>
 
-        <div className="flex item-center gap-1 mt-2">
-          <StarIcon size={16} className="text-primary fill-primary" />
-          <p className="text-sm">5.0(200 avaliações)</p>
+        {reviewStats.totalReviews > 0 && (
+          <div className="flex item-center gap-1 mt-2">
+            <StarIcon size={16} className="text-primary fill-primary" />
+            <p className="text-sm">
+              {reviewStats.averageRating.toFixed(1)} ({reviewStats.totalReviews}{" "}
+              {reviewStats.totalReviews === 1 ? "avaliação" : "avaliações"})
+            </p>
+          </div>
+        )}
         </div>
+        
       </div>
     </div>
   );

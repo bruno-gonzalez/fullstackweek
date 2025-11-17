@@ -20,7 +20,7 @@ const Header = () => {
       <Card>
         <CardContent className="p-5 flex items-center justify-between">
           <Link href={"/"}>
-            <Image src="/logo.png" alt="FSW Barber" height={30} width={180} />
+            <Image src="/logo.png" alt="Barber HUB" height={30} width={180} />
           </Link>
           <Sheet>
             <SheetTrigger asChild>

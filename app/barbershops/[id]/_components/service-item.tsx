@@ -8,7 +8,6 @@ import Image from "next/image";
 import {
   Sheet,
   SheetContent,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -17,12 +16,12 @@ import { Calendar } from "@/app/_components/ui/calendar";
 import { use, useEffect, useMemo, useState } from "react";
 import { ptBR } from "date-fns/locale";
 import { generateDayTimeList } from "../_helpers/hours";
-import { format, getDay, isSameDay, set, setHours, setMinutes } from "date-fns";
+import { format, setHours, setMinutes } from "date-fns";
 import { saveBooking } from "../_actions/save-bookin";
 import { Spinner } from "@/app/_components/ui/spinner";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { get } from "http";
+
 import { getDayBookings } from "../_actions/get-bookings";
 
 interface ServiceItemProps {
@@ -181,7 +180,7 @@ const ServiceItem = ({
                   </SheetHeader>
 
                   <div className="flex flex-col h-full">
-                    <div className="px-5 pb-6 border-b border-solid border-secondary">
+                    <div className="px-5 pb-6 border-b border-solid border-secondary w-full">
                       <Calendar
                         mode="single"
                         selected={date}

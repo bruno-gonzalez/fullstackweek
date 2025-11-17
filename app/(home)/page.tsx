@@ -6,13 +6,22 @@ import BookingItem from "../_components/booking-item";
 import { db } from "../_lib/prisma";
 import BarbershopItem from "./_components/barbershop-item";
 import { auth } from "@/auth";
+import { Review } from "@prisma/client";
 
 export default async function Home() {
   const session = await auth();
 
   const [barbershops, randomBarbershops, myBookings] = await Promise.all([
-    db.barbershop.findMany({}),
     db.barbershop.findMany({
+      include: {
+        reviews: true,
+      }
+    }),
+    db.barbershop.findMany({
+      include: {  
+        reviews: true,
+      },
+      take: 10,
       orderBy: {
         id: 'asc',
       }
@@ -24,14 +33,30 @@ export default async function Home() {
           },
           include: {
             barbershop: true,
-            service: true,
+            service: true
           },
           orderBy: {
             date: "asc",
           },
         })
       : Promise.resolve([]),
+    
   ]);
+
+  const getReviewStats = (reviews: Review[]) => {
+    if (reviews.length === 0) {
+      return {
+        averageRating: 0,
+        totalReviews: 0,
+      };
+    }
+
+    const total = reviews.reduce((acc, curr) => acc + curr.rating, 0);
+    return {
+      averageRating: total / reviews.length,
+      totalReviews: reviews.length,
+    };
+  }
 
   // Convert Decimal to number for Client Components
   const bookingsWithPrices = myBookings.map((booking) => ({
@@ -86,7 +111,7 @@ export default async function Home() {
         <div className="flex overflow-x-auto gap-3 [&::-webkit-scrollbar]:hidden px-5 pb-5">
           {barbershops.map((barbershop) => (
             <div className="min-w-[167px]" key={barbershop.id}>
-              <BarbershopItem barbershop={barbershop} />
+              <BarbershopItem barbershop={barbershop} reviewStats={getReviewStats(barbershop.reviews)} />
             </div>
           ))}
         </div>
@@ -100,7 +125,7 @@ export default async function Home() {
         <div className="flex overflow-x-auto gap-3 [&::-webkit-scrollbar]:hidden px-5 pb-5">
           {randomBarbershops.map((barbershop) => (
             <div className="min-w-[167px]" key={barbershop.id}>
-              <BarbershopItem barbershop={barbershop} />
+              <BarbershopItem barbershop={barbershop} reviewStats={getReviewStats(barbershop.reviews)} />
             </div>
           ))}
         </div>

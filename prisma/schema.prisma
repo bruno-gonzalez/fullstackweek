@@ -21,6 +21,7 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   bookings  Booking[]
+  reviews   Review[]
 }
 
 model Barbershop {
@@ -30,6 +31,7 @@ model Barbershop {
   imageUrl String
   services Service[]
   bookings Booking[]
+  reviews  Review[]
 }
 
 model Service {
@@ -53,7 +55,22 @@ model Booking {
   barbershopId String
   barbershop   Barbershop @relation(fields: [barbershopId], references: [id])
   createdAt    DateTime   @default(now())
-  updtatedAt   DateTime   @updatedAt
+  updatedAt    DateTime   @updatedAt
+}
+
+model Review {
+  id           String     @id @default(uuid())
+  rating       Int        @db.SmallInt
+  comment      String?    @db.Text
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  barbershopId String
+  barbershop   Barbershop @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([barbershopId])
+  @@index([userId])
 }
 
 model Account {
