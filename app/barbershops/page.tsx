@@ -3,6 +3,7 @@ import BarbershopItem from "../(home)/_components/barbershop-item";
 import Header from "../_components/header";
 import { db } from "../_lib/prisma";
 import Search from "../_components/search";
+import { Review } from "@prisma/client";
 
 
 interface BarbershopsPageProps {
@@ -27,7 +28,25 @@ const BarbershopsPage = async ({ searchParams }: BarbershopsPageProps) => {
         mode: "insensitive",
       },
     },
+    include: {
+      reviews: true,
+    },
   });
+
+  const getReviewStats = (reviews: Review[]) => {
+    if (reviews.length === 0) {
+      return {
+        averageRating: 0,
+        totalReviews: 0,
+      };
+    }
+
+    const total = reviews.reduce((acc, curr) => acc + curr.rating, 0);
+    return {
+      averageRating: total / reviews.length,
+      totalReviews: reviews.length,
+    };
+  };
 
   return (
     <>
@@ -44,7 +63,10 @@ const BarbershopsPage = async ({ searchParams }: BarbershopsPageProps) => {
           <div className="grid grid-cols-2 gap-4">
             {barbershopSearch.map((barbershop) => (
               <div key={barbershop.id} className="w-full">
-                <BarbershopItem barbershop={barbershop} />
+                <BarbershopItem 
+                  barbershop={barbershop} 
+                  reviewStats={getReviewStats(barbershop.reviews)} 
+                />
               </div>
             ))}
           </div>
