@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 import "./globals.css";
 import Footer from "./_components/footer";
@@ -19,7 +18,8 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body>
         <AuthProvider>
-          {children}
+          <div className="flex-1">{children}</div>
+
           <Footer />
         </AuthProvider>
         <Toaster />

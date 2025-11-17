@@ -61,7 +61,7 @@ const BookingsPage = async () => {
     return ( 
         <>
             <Header />
-            <div className="px-5 py-6 flex flex-col min-h-full">
+            <div className="px-5 py-6 flex flex-col">
                 <h1 className="text-xl font-bold mb-6">Agendamentos</h1>
 
                 {confirmedBookingsWithPrices.length > 0 && (
