@@ -6,9 +6,9 @@ import Search from "../_components/search";
 
 
 interface BarbershopsPageProps {
-  searchParams: {
+  searchParams: Promise<{
     search?: string;
-  };
+  }>;
 }
 
 const BarbershopsPage = async ({ searchParams }: BarbershopsPageProps) => {
