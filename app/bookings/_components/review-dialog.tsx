@@ -15,7 +15,7 @@ import {
 import Rating from "@/app/_components/ui/rating";
 import { Spinner } from "@/app/_components/ui/spinner";
 import { toast } from "sonner";
-import { saveReview } from "../_actions/save-review";
+import { saveReview } from "../../barbershops/[id]/_actions/save-review";
 import { Star } from "lucide-react";
 
 interface ReviewDialogProps {

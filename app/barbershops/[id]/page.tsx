@@ -2,7 +2,6 @@ import { db } from "@/app/_lib/prisma";
 import BarberShopInfo from "./_components/barber-shop-info";
 import ServiceItem from "./_components/service-item";
 import { auth } from "@/auth";
-import ReviewDialog from "./_components/review-dialog";
 import ReviewItem from "./_components/review-item";
 import Rating from "@/app/_components/ui/rating";
 import { Star } from "lucide-react";
@@ -104,12 +103,6 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
               </div>
             )}
           </div>
-          {session?.user && (
-            <ReviewDialog
-              barbershopId={barbershop.id}
-              barbershopName={barbershop.name}
-            />
-          )}
         </div>
 
         {barbershop.reviews.length === 0 ? (

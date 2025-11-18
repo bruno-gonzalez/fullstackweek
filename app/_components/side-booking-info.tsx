@@ -29,9 +29,9 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { Prisma, Service, Booking } from "@prisma/client";
 import { BookingItemProps } from "../_types/bookingItemProps";
+import ReviewDialog from "../bookings/_components/review-dialog";
 
 const BookingSideInfo = ({ booking }: BookingItemProps) => {
-
   const isBookingConfirmed = (booking: Booking) => {
     return isFuture(booking.date);
   };
@@ -73,11 +73,20 @@ const BookingSideInfo = ({ booking }: BookingItemProps) => {
         </div>
 
         <div className="py-3 px-3 space-y-4">
-          <Badge
-            variant={isBookingConfirmed(booking) ? "default" : "secondary"}
-          >
-            {isBookingConfirmed(booking) ? "Confirmado" : "Finalizado"}
-          </Badge>
+          <div className="flex justify-between items-center">
+            <Badge
+              variant={isBookingConfirmed(booking) ? "default" : "secondary"}
+            >
+              {isBookingConfirmed(booking) ? "Confirmado" : "Finalizado"}
+            </Badge>
+            {!isBookingConfirmed(booking) && (
+              <ReviewDialog
+                barbershopId={booking.barbershop.id}
+                barbershopName={booking.barbershop.name}
+              />
+            )}
+          </div>
+
           <Card>
             <CardContent className="flex flex-col gap-3 px-3 border-solid border-secondary">
               <div className="flex justify-between">
@@ -126,7 +135,6 @@ const BookingSideInfo = ({ booking }: BookingItemProps) => {
                 Cancelar
               </Button>
             </AlertDialogTrigger>
-            
           </AlertDialog>
         </SheetFooter>
       </SheetContent>
