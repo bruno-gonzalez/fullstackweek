@@ -30,6 +30,7 @@ import { useState } from "react";
 import { Prisma, Service, Booking } from "@prisma/client";
 import { BookingItemProps } from "../_types/bookingItemProps";
 import ReviewDialog from "../bookings/_components/review-dialog";
+import CancelAlert from "./cancel-alert";
 
 const BookingSideInfo = ({ booking }: BookingItemProps) => {
   const isBookingConfirmed = (booking: Booking) => {
@@ -135,6 +136,7 @@ const BookingSideInfo = ({ booking }: BookingItemProps) => {
                 Cancelar
               </Button>
             </AlertDialogTrigger>
+            <CancelAlert booking={booking} />
           </AlertDialog>
         </SheetFooter>
       </SheetContent>
